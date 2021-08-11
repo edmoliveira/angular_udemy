@@ -1,0 +1,25 @@
+
+<div app-header-attribute></div>
+
+<p>home works!</p>
+<input type="text" class="form-control" [(ngModel)]="serverName">
+<p [ngStyle]="{color: getColor()}" 
+[ngClass]="{filledInput: serverName.trim() !== ''}"
+*ngIf="serverName.trim() !== '', else noUsername">User: {{serverName}}</p>
+<ng-template #noUsername>
+    <p style="color: red">Please, fill in the username</p>
+</ng-template>
+<button (click)="update()">Update</button>
+<button (click)="add()" [disabled]="this.serverName === ''">Add</button>
+<br>
+<br>
+<div class="container table">
+    <div class="row table-row" *ngFor="let user of users;let id = index">
+        <div class="col-1" style="text-align: center">
+            <label>{{id + 1}}</label>
+        </div>
+        <div class="col-11">
+            <label>{{user}}</label>
+        </div>
+    </div>
+</div>

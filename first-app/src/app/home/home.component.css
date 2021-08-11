@@ -1,0 +1,16 @@
+.filledInput {
+    background: black;
+}
+
+.table {
+    border: 1px solid #b61313;
+}
+
+.table-row {
+    border-bottom: 1px solid #000000;
+    padding: 5px;
+}
+
+.table-row:last-child {
+    border-bottom: 0px solid #b61313;
+}

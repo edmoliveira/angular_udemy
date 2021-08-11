@@ -1,0 +1,22 @@
+--no-strict => 
+--strict
+
+ng serve
+
+ng new "App Name"
+
+ng generate component "Component name"
+
+Selector as the Element Name or Attribute
+
+Databinding
+
+String Interpolation => {{data}}
+Property Binding => [property] = "data"
+
+React Events => (event)="expression"
+
+Two-way-binds => [(ngmode)]="data"
+
+Directive  => You can define your own directives to attach custom behavior to elements in the DOM.
+
