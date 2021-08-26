@@ -1,0 +1,21 @@
+<button type="button" style="width: 100px; height: 50px;" (click)="onHeader()" app-hostbinding>Add</button>
+<div *appUnless="headerCondition">
+    <div [ngSwitch]="headerValue">
+        <p *ngSwitchCase="0">I'M</p>
+        <p *ngSwitchCase="1">LEARNING</p>
+        <p *ngSwitchCase="2">A LITTLE</p>
+        <p *ngSwitchDefault>ANGULAR</p>
+    </div>
+</div>
+<div  *ngFor="let item of items; let i = index;" >
+  <div *ngIf="i % 2 === 0; else other" style="width: 70%;padding: 10px;margin-bottom: 5px;" 
+  [app-highlight]="'#E7ECE7'" mouseColor="#C2DEE7" >
+      {{item + i}}
+  </div>
+  <ng-template #other>
+      <div style="width: 70%;padding: 10px;margin-bottom: 5px;" 
+      [app-better-highlight]="'#B5B9B5'" mouseColor="#C2DEE7" >
+          {{item + i}}
+      </div>
+    </ng-template>  
+</div>
