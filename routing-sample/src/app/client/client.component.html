@@ -1,0 +1,20 @@
+<div class="card" style="width: 18rem;" *ngIf="!newMode">
+  <ul class="list-group list-group-flush">
+    <li class="list-group-item">Number: {{client.id}}</li>
+    <li class="list-group-item">Name: {{client.name}}</li>
+  </ul>
+</div>
+
+<div class="container" *ngIf="newMode">
+  <div class="row">
+      <div class="form-group">
+          <label >Name</label>
+          <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter name"
+          [(ngModel)]="client.name">
+      </div>
+  </div>
+  <div class="row" style="padding: 10px;">
+      <button class="btn btn-primary" style="width: 150px;">Add</button>
+  </div>     
+</div>
+<p></p>

@@ -1,0 +1,7 @@
+.grid tbody tr {
+    cursor: pointer;
+}
+
+.grid tbody tr td {
+    user-select: none;
+}

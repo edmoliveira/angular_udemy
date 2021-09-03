@@ -1,0 +1,9 @@
+<div class="form-group" *ngIf="server != null">
+    <label >Name</label>
+    <input type="text" class="form-control" placeholder="Enter Name"
+    [(ngModel)]="server.name">
+</div>
+<div class="row" style="padding: 10px;" *ngIf="allowEdit">
+    <button class="btn btn-primary" style="width: 150px;"
+        >Update</button>
+</div> 

@@ -1,0 +1,31 @@
+<div class="container" *ngIf="user !== null">
+    <div class="row">
+        <div class="form-group">
+            <label >First Name</label>
+            <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter first name"
+            [(ngModel)]="user.firstName">
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <label >Last Name</label>
+            <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter last name"
+            [(ngModel)]="user.lastName">
+        </div>
+    </div>    
+    <div class="row">
+        <div class="form-group">
+            <label >Email</label>
+            <input type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email"
+            [(ngModel)]="user.email">
+        </div>
+    </div> 
+    <div class="row" style="padding: 10px;">
+        <button class="btn btn-primary" style="width: 150px;"
+            *ngIf="editMode">Update</button>
+        <button class="btn btn-primary" style="width: 150px;"
+            *ngIf="newMode">Add</button>
+    </div>     
+</div>
+<p></p>
+
