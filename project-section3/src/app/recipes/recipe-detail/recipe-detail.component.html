@@ -19,9 +19,9 @@
                     Manage Recipe
                 </button>
                 <div #dropdownMenuB class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <a class="dropdown-item" href="#" (click)="addIngredients()">Add Shopping List</a>
-                    <a class="dropdown-item" href="#">Edit Recipe</a>
-                    <a class="dropdown-item" href="#">Delete Recipe</a>
+                    <a class="dropdown-item" style="cursor: pointer;" (click)="addIngredients()">Add Shopping List</a>
+                    <a class="dropdown-item" style="cursor: pointer;" [routerLink]="['/recipes', recipe.id, 'edit']">Edit Recipe</a>
+                    <a class="dropdown-item" style="cursor: pointer;" (click)="delete()">Delete Recipe</a>
                 </div>
             </div> 
         </div>

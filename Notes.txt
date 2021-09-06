@@ -8,6 +8,7 @@ ng new "App Name"
 ng generate component "Component name"
 ng generate component recipes --skip-tests true
 ng generate component recipes/recipe-list --skip-tests true
+ng generate component recipes/recipe-data --skip-tests true
 
 ng generate directive <directive_name>
 
