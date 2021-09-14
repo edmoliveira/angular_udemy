@@ -1,0 +1,67 @@
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+            <form [formGroup]="signupFormGroup" (ngSubmit)="onSubmit()">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" formControlName="username">
+                    <span class="help-block error"
+                        *ngIf="!signupFormGroup.get('username').valid && signupFormGroup.get('username').touched">
+                        <span *ngIf="signupFormGroup.get('username').errors['required']">This field is required!</span>
+                        <span *ngIf="signupFormGroup.get('username').errors['nameIfForbidden']">Please enter a valid username!</span>
+                    </span>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label>Mail</label>
+                    <input type="email" class="form-control" formControlName="email">
+                    <span class="help-block error"
+                        *ngIf="!signupFormGroup.get('email').valid && signupFormGroup.get('email').touched">
+                        <span *ngIf="signupFormGroup.controls?.email.errors?.required">This field is required!</span>
+                        <span *ngIf="signupFormGroup.controls?.email.errors?.email">Invalid format email!</span>
+                        <span *ngIf="signupFormGroup.controls?.email.errors?.emailIfForbidden">Please enter a valid email!</span>
+                    </span>                    
+                </div>
+                <br>
+                <div formGroupName="pass">
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" class="form-control" formControlName="password">
+                        <span class="help-block error"
+                            *ngIf="!signupFormGroup.get('pass.password').valid && signupFormGroup.get('pass.password').touched"    
+                        >Please enter a valid password!</span>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label>Repeat Password</label>
+                        <input type="password" class="form-control" formControlName="repeatPassword">
+                        <span class="help-block error"
+                            *ngIf="!signupFormGroup.get('pass.repeatPassword').valid && signupFormGroup.get('pass.repeatPassword').touched"    
+                        >Please enter a valid password!</span>                    
+                    </div>
+                </div>
+                <br>
+                <div class="form-group">
+                    <label>Genders</label>
+                    <div class="radio" *ngFor="let gender of genders">
+                    <label >
+                        <input type="radio" [value]="gender" formControlName="gender">
+                        {{ gender }}
+                    </label>
+                    </div>
+                </div>        
+                <br>
+                <div formArrayName="hobbies">
+                    <h4>Your Hobbies</h4>
+                    <button class="btn btn-primary" type="button" (click)="onAddHobby()">Add Hobby</button>
+                    <p></p>
+                    <div class="form-group" *ngFor="let hobby of getHobbiesControls(); let i = index;">
+                        <input type="text" class="form-control"  [formControlName]="i">
+                    </div>
+                </div>
+                <br>
+                <button class="btn btn-primary" type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
