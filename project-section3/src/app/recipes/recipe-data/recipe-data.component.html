@@ -1,24 +1,78 @@
-<div class="row">
-    <div class="form-group">
-        <label >Name</label>
-        <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter Name"
-        [(ngModel)]="recipe.name">
+<form [formGroup]="formGroup" (ngSubmit)="onSubmit()">
+    <div class="row">
+        <div class="form-group">
+            <label >Name</label>
+            <input type="text" class="form-control" formControlName="name">
+            <span class="help-block error"
+                *ngIf="!formGroup.controls?.name?.valid && formGroup.controls?.name?.touched">
+                <span *ngIf="formGroup.controls?.name?.errors['required']">This field is required!</span>
+                <span *ngIf="formGroup.controls?.name?.errors['nameIfForbidden']">The name already exists!</span>
+            </span>             
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="form-group">
-        <label >Description</label>
-        <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter Description"
-        [(ngModel)]="recipe.description">
+    <br>
+    <div class="row">
+        <div class="form-group">
+            <label >Description</label>
+            <textarea rows="4" class="form-control" formControlName="description"></textarea>
+            <span class="help-block error"
+                *ngIf="!formGroup.controls?.description?.valid && formGroup.controls?.description?.touched">
+                <span *ngIf="formGroup.controls?.description?.errors['required']">This field is required!</span>
+            </span>                
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="form-group">
-        <label >Image Path</label>
-        <input type="text" class="form-control" aria-describedby="emailHelp" placeholder="Enter Image Path"
-        [(ngModel)]="recipe.imagePath">
+    <br>
+    <div class="row">
+        <div class="form-group" class="preview-image-container">
+            <label >Image Url</label>
+            <input type="text" class="form-control" formControlName="imagePath">
+            <span class="help-block error"
+                *ngIf="!formGroup.controls?.imagePath?.valid && formGroup.controls?.imagePath?.touched">
+                <span *ngIf="formGroup.controls?.imagePath?.errors['required']">This field is required!</span>
+                <span *ngIf="formGroup.controls?.imagePath?.errors['pattern']">The URL is invalid!</span>
+            </span>   
+            <div class="preview-image" *ngIf="formGroup.controls?.imagePath?.valid">
+                    <img [src]="formGroup.controls?.imagePath.value" [alt]="formGroup.controls?.name.value" 
+                    style="height: 75px;width: 75px;">
+            </div>          
+        </div>
     </div>
-</div>
-<div class="row" style="padding: 10px;" *ngIf="!editMode">
-    <button class="btn btn-primary" style="width: 150px;" (click)="add()">Add</button>
-</div> 
+    <br>
+    <div class="row" style="margin-top: 75px;">
+        <div class="form-group" formArrayName="ingredients">
+            <h4>Ingredients</h4>
+            <div class="form-group" *ngFor="let ingredientFormGroup of getIngredientsControls(); let i = index;">
+                <div class="row" [formGroup]="ingredientFormGroup" style="margin-bottom: 5px;">
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control" formControlName="name">
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="number" class="form-control"  formControlName="amount">
+                    </div>
+                    <div class="col-sm-1">
+                        <button class="btn btn-danger" type="button" (click)="onRemoveIngredient(i)">X</button>
+                    </div>   
+                </div>
+            </div>
+            <p></p> 
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-5">
+
+        </div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary" style="width: 120px;" type="button" (click)="onAddIngredient()"
+            [disabled]="!formGroup.controls?.ingredients.valid">Add</button>
+        </div>
+        <div class="col-sm-5">
+
+        </div>                
+    </div>
+    <br>
+    <div class="row" style="padding: 10px;">
+        <button class="btn btn-primary" style="width: 120px;" type="submit" [disabled]="!formGroup.valid">Save</button>
+        &nbsp;
+        <button class="btn btn-danger" style="width: 120px;" type="button" (click)="onCancel()">Cancel</button>
+    </div> 
+</form>

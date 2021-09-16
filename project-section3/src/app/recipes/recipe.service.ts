@@ -1,12 +1,13 @@
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Recipe } from './models/recipe.model';
 import { Ingredient } from '../shopping-list/models/ingredient.model';
+import { Subject } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class RecipeService {
-    onListChange: EventEmitter<void> = new EventEmitter();
+    onListChange: Subject<void> = new Subject();
     private nextId: number = 2;
 
     private recipes: Recipe[] = [
@@ -14,7 +15,7 @@ export class RecipeService {
         1
         ,'A test recipe'
         ,'This is simply a test' 
-        ,'https://www.simplyrecipes.com/thmb/OCi18J2V8OeKDFV3FxoeKvgq74E=/1423x1067/smart/filters:no_upscale()/__opt__aboutcom__coeus__resources__content_migration__simply_recipes__uploads__2012__07__grilled-sweet-potatoes-horiz-a-1600-7c8292daa98e4020b447f0dc97a45cb7.jpg'
+        ,'https://img.itdg.com.br/tdg/images/recipes/000/062/547/318292/318292_original.jpg'
         ,[
             new Ingredient('Egg', 5)
             , new Ingredient('Milk', 1)
@@ -24,7 +25,7 @@ export class RecipeService {
             2            
             ,'A test recipe 2'
             , 'This is simply a test 2'
-            , 'https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/easy-cheap-dinners-weeknight-1604466210.jpg?crop=0.502xw:1.00xh;0.498xw,0&resize=640:*'
+            , 'https://www.comidaereceitas.com.br/img/sizeswp/1200x675/2019/09/torta_chocolate_amargo.jpg'
             ,[
                 new Ingredient('Egg', 5)
                 , new Ingredient('Milk', 1)
@@ -45,7 +46,20 @@ export class RecipeService {
     add(recipe: Recipe) {
         this.recipes.push(recipe);
 
-        this.onListChange.emit();
+        this.onListChange.next();
+    }
+
+    update(id: number, name: string, description: string, imagePath: string, ingredients: Ingredient[]) {
+        const recipe: Recipe = this.recipes.find(item => item.id === id);
+
+        if(recipe != null) {
+            recipe.name = name;
+            recipe.description = description;
+            recipe.imagePath = imagePath;
+            recipe.ingredients = ingredients;
+
+            this.onListChange.next();
+        }
     }
 
     delete(id: number){
@@ -53,7 +67,12 @@ export class RecipeService {
 
         if(index > 0){
             this.recipes.splice(index, 1);
-            this.onListChange.emit();
+            this.onListChange.next();
         }
     }
+
+    checkIfNameExists(name: string){
+        return this.recipes.findIndex(item => 
+            item.name.trim().toLowerCase() === (name||'').trim().toLowerCase()) !== -1;
+    }    
 }

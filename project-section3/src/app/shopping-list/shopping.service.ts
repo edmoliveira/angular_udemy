@@ -6,10 +6,11 @@ import { Subject } from 'rxjs';
     providedIn: 'root'
 })
 export class ShoppingService {
-    onAddedIngredient: Subject<void> = new Subject();
+    onChangedIngredient: Subject<void> = new Subject();
+    onSelectedIngredient: Subject<Ingredient> = new Subject();
 
     private ingredients: Ingredient[] = [
-        new Ingredient('Apples', 5)
+        new Ingredient('Apple', 5)
         ,new Ingredient('Orange', 15)
         ,new Ingredient('Flour', 20)
     ];
@@ -20,6 +21,35 @@ export class ShoppingService {
 
     addIngredient(...ingredients: Ingredient[]){
         this.ingredients.push(...ingredients);
-        this.onAddedIngredient.next();
+        this.onChangedIngredient.next();
+    }
+
+    selectedIngredient(ingredient: Ingredient) {
+        this.onSelectedIngredient.next(ingredient);
+    }
+
+    updateIngredient(name: string, amount: number) {
+        const ingredient: Ingredient = this.ingredients.find(item => 
+            item.name.trim().toLowerCase() === (name||'').trim().toLowerCase());
+
+        if(ingredient != null) {
+            ingredient.amount = amount;
+            this.onChangedIngredient.next();
+        }
+    }
+
+    deleteIngredient(name: string) {
+        const index = this.ingredients.findIndex(item => 
+            item.name.trim().toLowerCase() === (name||'').trim().toLowerCase());
+
+        if(index > -1) {
+            this.ingredients.splice(index, 1);
+            this.onChangedIngredient.next();
+        }
+    }
+
+    checkIfNameExists(name: string){
+        return this.ingredients.findIndex(item => 
+            item.name.trim().toLowerCase() === (name||'').trim().toLowerCase()) !== -1;
     }
 }

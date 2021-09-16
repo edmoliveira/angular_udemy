@@ -1,0 +1,10 @@
+.preview-image-container {
+    position: relative;
+}
+
+.preview-image {
+    position: absolute;
+    right: 12px;
+    width: 75px;
+    height: 75px;
+}
