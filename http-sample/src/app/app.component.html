@@ -1,0 +1,82 @@
+<div class="container" style="background-color: white;height: 100%;">
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <form #postForm="ngForm" (ngSubmit)="onCreatePost(postForm.value)">
+        <div class="form-group">
+          <label for="title">Title</label>
+          <input
+            type="text"
+            class="form-control"
+            id="title"
+            required
+            ngModel
+            name="title"
+            [disabled]="isPosting"
+          />
+        </div>
+        <div class="form-group">
+          <label for="content">Content</label>
+          <textarea
+            class="form-control"
+            id="content"
+            required
+            ngModel
+            name="content"
+            [disabled]="isPosting"
+          ></textarea>
+        </div>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="!postForm.valid || isPosting"
+        >
+          Send Post
+        </button>
+      </form>
+    </div>
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <button class="btn btn-primary" (click)="onFetchPosts()">
+        Fetch Posts
+      </button>
+      |
+      <button
+        class="btn btn-danger"
+        [disabled]="loadedPosts.length < 1"
+        (click)="onClearPosts()"
+      >
+        Clear Posts
+      </button>
+    </div>
+  </div>
+  <hr />
+  <div class="row" *ngIf="loadedPosts.length > 0 && !isFetching">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of loadedPosts;">
+                    <th scope="row">{{item.title}}</th>
+                    <td>{{item.content}}</td>
+                </tr>        
+            </tbody>
+        </table> 
+    </div>
+  </div>  
+  <div  class="row">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
+      <h1 *ngIf="isFetching">Loading...</h1>
+      <div class="alert alert-danger" *ngIf="error">
+        <h1>An Error Occurred!</h1>
+        <p>{{ error }}</p>
+      </div>
+    </div>
+  </div>
+</div>
