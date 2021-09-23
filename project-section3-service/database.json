@@ -1,0 +1,30 @@
+{
+  "ingredients": [
+    {
+      "name": "Egg",
+      "amount": 20
+    },
+    {
+      "name": "Flour",
+      "amount": 2
+    }
+  ],
+  "recipes": [
+    {
+      "id": 3,
+      "name": "Chocolate Cake",
+      "description": "The Best Chocolate Cake",
+      "imagePath": "https://addapinch.com/wp-content/uploads/2020/04/chocolate-cake-DSC_1768.jpg",
+      "ingredients": [
+        {
+          "name": "Egg",
+          "amount": 10
+        },
+        {
+          "name": "Flour",
+          "amount": 1
+        }
+      ]
+    }
+  ]
+}

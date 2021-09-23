@@ -10,28 +10,7 @@ export class RecipeService {
     onListChange: Subject<void> = new Subject();
     private nextId: number = 2;
 
-    private recipes: Recipe[] = [
-        new Recipe(
-        1
-        ,'A test recipe'
-        ,'This is simply a test' 
-        ,'https://img.itdg.com.br/tdg/images/recipes/000/062/547/318292/318292_original.jpg'
-        ,[
-            new Ingredient('Egg', 5)
-            , new Ingredient('Milk', 1)
-        ]
-        )
-        , new Recipe(
-            2            
-            ,'A test recipe 2'
-            , 'This is simply a test 2'
-            , 'https://www.comidaereceitas.com.br/img/sizeswp/1200x675/2019/09/torta_chocolate_amargo.jpg'
-            ,[
-                new Ingredient('Egg', 5)
-                , new Ingredient('Milk', 1)
-            ]
-        )
-    ];
+    private recipes: Recipe[] = [];
 
     getNextId() {
         this.nextId++;
@@ -69,6 +48,11 @@ export class RecipeService {
             this.recipes.splice(index, 1);
             this.onListChange.next();
         }
+    }
+
+    set(recipes: Recipe[]) {
+        this.recipes = recipes;
+        this.onListChange.next();
     }
 
     checkIfNameExists(name: string){

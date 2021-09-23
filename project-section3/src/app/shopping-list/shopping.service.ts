@@ -9,30 +9,27 @@ export class ShoppingService {
     onChangedIngredient: Subject<void> = new Subject();
     onSelectedIngredient: Subject<Ingredient> = new Subject();
 
-    private ingredients: Ingredient[] = [
-        new Ingredient('Apple', 5)
-        ,new Ingredient('Orange', 15)
-        ,new Ingredient('Flour', 20)
-    ];
-
-    getIngredients() {
-        return this.ingredients.slice();
-    }
-
-    addIngredient(...ingredients: Ingredient[]){
-        this.ingredients.push(...ingredients);
-        this.onChangedIngredient.next();
-    }
+    private ingredients: Ingredient[] = [];
 
     selectedIngredient(ingredient: Ingredient) {
         this.onSelectedIngredient.next(ingredient);
     }
 
-    updateIngredient(name: string, amount: number) {
+    getIngredients() {
+        return this.ingredients.slice();
+    }
+
+    addIngredient(ingredient: Ingredient){
+        this.ingredients.push(ingredient);
+        this.onChangedIngredient.next();
+    }
+
+    updateIngredient(nameSearch: string, name: string, amount: number) {
         const ingredient: Ingredient = this.ingredients.find(item => 
-            item.name.trim().toLowerCase() === (name||'').trim().toLowerCase());
+            item.name.trim().toLowerCase() === (nameSearch||'').trim().toLowerCase());
 
         if(ingredient != null) {
+            ingredient.name = name;
             ingredient.amount = amount;
             this.onChangedIngredient.next();
         }
@@ -46,6 +43,27 @@ export class ShoppingService {
             this.ingredients.splice(index, 1);
             this.onChangedIngredient.next();
         }
+    }
+
+    pushIngredients(...ingredients: Ingredient[]){
+        ingredients.forEach(itemPush => {
+            const ingredient: Ingredient = this.ingredients.find(item => 
+                item.name.trim().toLowerCase() === itemPush.name.trim().toLowerCase());
+
+            if(ingredient != null) {
+                ingredient.amount += itemPush.amount;
+            }            
+            else {
+                this.ingredients.push(itemPush);
+            }
+        });
+        
+        this.onChangedIngredient.next();
+    }
+
+    setIngredients(ingredients: Ingredient[]) {
+        this.ingredients = ingredients;
+        this.onChangedIngredient.next();
     }
 
     checkIfNameExists(name: string){

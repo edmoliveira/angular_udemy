@@ -13,6 +13,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   formGroup: FormGroup;
   isEdit: boolean = false;
+  private nameUpdate: string = null;
 
   constructor(private shoppingService: ShoppingService) { }
 
@@ -24,6 +25,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
 
     this.subscription = this.shoppingService.onSelectedIngredient.subscribe((seletecdIngredient: Ingredient) => {
       this.isEdit = true;
+      this.nameUpdate = seletecdIngredient.name;     
 
       this.formGroup.controls.name.setValue(seletecdIngredient.name);
       this.formGroup.controls.amount.setValue(seletecdIngredient.amount);
@@ -38,6 +40,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     }
     else{
       this.shoppingService.updateIngredient(
+        this.nameUpdate,
         this.formGroup.controls.name.value,
         this.formGroup.controls.amount.value
       );

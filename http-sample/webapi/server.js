@@ -44,7 +44,7 @@ app.post('/api/contents', function(req, res){
 		result = {"success": true, "data": contents, "error": null};
 	}
 	catch(e){
-		result = {"success": false, "data": null, "error": err.message};
+		result = {"success": false, "data": null, "error": e.message};
 	}   
 	res.send(result);
 });
