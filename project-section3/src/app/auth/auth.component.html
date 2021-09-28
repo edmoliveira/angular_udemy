@@ -1,0 +1,59 @@
+<section class="vh-100">
+    <div class="container-fluid h-custom">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-md-9 col-lg-6 col-xl-5">
+          <img src="assets/logo.png" class="img-fluid"
+            alt="Logo">
+        </div>
+        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+          <form [formGroup]="signupFormGroup" (ngSubmit)="onSubmit()">
+            <div class="divider d-flex align-items-center my-4">
+              <p class="text-center fw-bold mx-3 mb-0">Login</p>
+            </div>
+  
+            <div class="d-flex align-items-center my-4" *ngIf="unauthorized">
+              <span class="help-block error button-center" >Incorrect email or password</span>
+            </div>
+
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+              <input type="email" class="form-control form-control-lg"
+                placeholder="Enter a valid email address" formControlName="email"/>
+                <span class="help-block error"
+                *ngIf="!signupFormGroup.get('email').valid && signupFormGroup.get('email').touched">
+                  <span *ngIf="signupFormGroup.controls?.email.errors?.required">This field is required!</span>
+                  <span *ngIf="signupFormGroup.controls?.email.errors?.email">Invalid format email!</span>
+                </span> 
+            </div>
+  
+            <!-- Password input -->
+            <div class="form-outline mb-3">
+              <input type="password" class="form-control form-control-lg"
+                placeholder="Enter password" formControlName="password"/>
+                <span class="help-block error"
+                *ngIf="!signupFormGroup.get('password').valid && signupFormGroup.get('password').touched"    
+                >
+                  <span *ngIf="signupFormGroup.controls?.password.errors?.required">This field is required!</span>
+                </span>
+            </div>
+  
+            <div class="container-text-center text-lg-start mt-4 pt-2" >
+              <button type="submit" class="btn btn-primary btn-lg button-center"
+                style="padding-left: 2.5rem; padding-right: 2.5rem;"
+                [disabled]="!signupFormGroup.valid">Sign In</button>
+                
+                <div class="lds-ripple button-center" *ngIf="signupFormGroup.disabled"><div></div><div></div></div>
+            </div>   
+
+            <p></p>
+            
+            <div class="alert alert-danger" *ngIf="errorMessage">
+              <h1>An Error Occurred!</h1>
+              <p>{{ errorMessage }}</p>
+            </div>             
+  
+          </form>
+        </div>
+      </div>
+    </div>     
+  </section>

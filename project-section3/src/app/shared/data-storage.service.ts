@@ -1,5 +1,4 @@
 import { ResultService } from "./result-service.model";
-import { environment } from 'src/environments/environment';
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Ingredient } from "../shopping-list/models/ingredient.model";
@@ -7,18 +6,20 @@ import { ShoppingService } from "../shopping-list/shopping.service";
 import { forkJoin, Subject } from "rxjs";
 import { Recipe } from "../recipes/models/recipe.model";
 import { RecipeService } from "../recipes/recipe.service";
+import { BaseService } from "./base.service";
 
 @Injectable({
     providedIn: 'root'
 })
-export class DataStorageService {
+export class DataStorageService extends BaseService {
     onChangeStatus: Subject<{isLoading: boolean, errorMessage: string}> = new Subject();
+    onSavedData: Subject<void> = new Subject();
 
     constructor(private http: HttpClient, 
         private shoppingService: ShoppingService,
         private recipeService: RecipeService
         ) {
-
+        super();
     }
 
     fetchData() {
@@ -91,34 +92,11 @@ export class DataStorageService {
                 isLoading: false, 
                 errorMessage: (error || '').trim() !== '' ? error : null
             });
+
+            this.onSavedData.next();
         }, 
         error => {
             this.onChangeStatus.next({isLoading: false, errorMessage: this.manageHttpError(error)});
         });
-    }
-
-    private getResponse<T>(
-        result: ResultService<T>, 
-        onSuccess?: (data: T) => void, 
-        onError?: (message: string) => void,
-        onFinally?: () => void){
-        if(result.success && onSuccess != null) {
-            onSuccess(result.data);
-        }
-        else if(onError != null) {
-            onError(result.error);
-        }
-
-        if(onFinally != null) {
-            onFinally();
-        }
-    }
-
-    private manageHttpError(error: any): string { 
-        if(!environment.production) {
-            console.log(error);
-        }
-
-        return 'Operation failed: System error. Please contact your system administrator.';
     }
 }

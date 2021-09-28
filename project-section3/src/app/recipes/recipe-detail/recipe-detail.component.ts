@@ -27,11 +27,11 @@ export class RecipeDetailComponent implements OnInit {
 
   addIngredients() {
     this.shoppingService.pushIngredients(...this.recipe.ingredients);
-    this.router.navigate(['/shopping-list']);
+    this.router.navigate(['/home/shopping-list']);
   }
 
   delete() {
     this.recipeService.delete(this.recipe.id);
-    this.router.navigate(['/recipes']);
+    this.router.navigate(['/home/recipes']);
   }
 }

@@ -1,17 +1,1 @@
-<app-header></app-header>
-<br>
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <div *ngIf="!isLoading">
-        <router-outlet></router-outlet>
-      </div>
-      <img *ngIf="isLoading" src="assets/loading.gif" alt="Loading..." class="loading">
-      <p></p>
-      <div class="alert alert-danger" *ngIf="errorMessage">
-        <h1>An Error Occurred!</h1>
-        <p>{{ errorMessage }}</p>
-      </div>      
-    </div>
-  </div>
-</div>
+<router-outlet></router-outlet>

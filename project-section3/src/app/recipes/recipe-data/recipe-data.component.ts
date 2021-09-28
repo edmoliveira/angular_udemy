@@ -104,11 +104,11 @@ export class RecipeDataComponent implements OnInit {
       );
     }
     
-    this.router.navigate(['/recipes']);
+    this.router.navigate(['/home/recipes']);
   }
 
   onCancel() {
-    this.router.navigate(['/recipes']);
+    this.router.navigate(['/home/recipes']);
   }
 
   private getIngredientsArray(): FormArray {

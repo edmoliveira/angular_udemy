@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
     providedIn: 'root'
 })
 export class ShoppingService {
-    onChangedIngredient: Subject<void> = new Subject();
+    onChangedIngredient: Subject<boolean> = new Subject();
     onSelectedIngredient: Subject<Ingredient> = new Subject();
 
     private ingredients: Ingredient[] = [];
@@ -21,7 +21,7 @@ export class ShoppingService {
 
     addIngredient(ingredient: Ingredient){
         this.ingredients.push(ingredient);
-        this.onChangedIngredient.next();
+        this.onChangedIngredient.next(false);
     }
 
     updateIngredient(nameSearch: string, name: string, amount: number) {
@@ -31,7 +31,7 @@ export class ShoppingService {
         if(ingredient != null) {
             ingredient.name = name;
             ingredient.amount = amount;
-            this.onChangedIngredient.next();
+            this.onChangedIngredient.next(false);
         }
     }
 
@@ -41,7 +41,7 @@ export class ShoppingService {
 
         if(index > -1) {
             this.ingredients.splice(index, 1);
-            this.onChangedIngredient.next();
+            this.onChangedIngredient.next(false);
         }
     }
 
@@ -58,12 +58,12 @@ export class ShoppingService {
             }
         });
         
-        this.onChangedIngredient.next();
+        this.onChangedIngredient.next(false);
     }
 
     setIngredients(ingredients: Ingredient[]) {
         this.ingredients = ingredients;
-        this.onChangedIngredient.next();
+        this.onChangedIngredient.next(true);
     }
 
     checkIfNameExists(name: string){

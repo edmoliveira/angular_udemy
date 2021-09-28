@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
     providedIn: 'root'
 })
 export class RecipeService {
-    onListChange: Subject<void> = new Subject();
+    onListChange: Subject<boolean> = new Subject();
     private nextId: number = 2;
 
     private recipes: Recipe[] = [];
@@ -25,7 +25,7 @@ export class RecipeService {
     add(recipe: Recipe) {
         this.recipes.push(recipe);
 
-        this.onListChange.next();
+        this.onListChange.next(false);
     }
 
     update(id: number, name: string, description: string, imagePath: string, ingredients: Ingredient[]) {
@@ -37,22 +37,22 @@ export class RecipeService {
             recipe.imagePath = imagePath;
             recipe.ingredients = ingredients;
 
-            this.onListChange.next();
+            this.onListChange.next(false);
         }
     }
 
     delete(id: number){
         const index = this.recipes.findIndex(item => item.id === id);
 
-        if(index > 0){
+        if(index > -1){
             this.recipes.splice(index, 1);
-            this.onListChange.next();
+            this.onListChange.next(false);
         }
     }
 
     set(recipes: Recipe[]) {
         this.recipes = recipes;
-        this.onListChange.next();
+        this.onListChange.next(true);
     }
 
     checkIfNameExists(name: string){

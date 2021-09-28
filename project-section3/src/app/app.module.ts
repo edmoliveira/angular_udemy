@@ -14,7 +14,12 @@ import { AppDropdownDirective } from './shared/dropdown.directive';
 import { AppRoutingModule } from './app-routing.module';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { RecipeDataComponent } from './recipes/recipe-data/recipe-data.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthComponent } from './auth/auth.component';
+import { HomeComponent } from './home/home.component';
+import { WelcomeComponent } from './home/welcome/welcome.component';
+import { CookieService } from 'ngx-cookie-service';
+import { AuthInterceptorService } from './shared/auth-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -28,7 +33,10 @@ import { HttpClientModule } from '@angular/common/http';
     ShoppingEditComponent,
     AppDropdownDirective,
     NotFoundComponent,
-    RecipeDataComponent
+    RecipeDataComponent,
+    AuthComponent,
+    HomeComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +45,10 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule, 
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    CookieService,
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
