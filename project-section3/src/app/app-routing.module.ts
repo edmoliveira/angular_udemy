@@ -26,7 +26,7 @@ const appRoutes = [
         ] ,
         canActivate: [AuthGuard], canActivateChild: [AuthGuard]
     }
-    , { path: 'auth', component: AuthComponent, canActivate: [AuthGuard] }
+    , { path: 'auth', component: AuthComponent }
     , { path: 'not-found', component: NotFoundComponent, data: { message: 'PAGE NOT FOUND'} }
     , { path: '**', redirectTo: '/not-found', pathMatch: 'full' }
 ]

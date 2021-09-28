@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, EventEmitter } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable, Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { BaseService } from './base.service';
 import { DataStorageService } from './data-storage.service';
 import { ResultService } from './result-service.model';
@@ -23,12 +24,8 @@ export class AuthenticantionService extends BaseService {
         super();
     }
 
-    checkAuthenticated() {
-        return new Promise(
-            (resolve, reject) => {
-                resolve(this.getLoggedIn());
-            }
-        )
+    checkAuthenticated(): boolean {
+        return  (this.getToken() || '').trim() != '';
     }
 
     login(email: string, password: string) {
@@ -52,11 +49,19 @@ export class AuthenticantionService extends BaseService {
                     this.cookieService.set('tk-app', data.token, expiredDate);
 
                     if(!this.wasLoading) {
+                        this.dataStorageService.onChangeStatus.pipe(take(2)).subscribe(change => {
+                            if(!change.isLoading) {
+                                this.onState.next(new UserAuthenticationReponse(true, false, null));
+                            }
+                        });
+
                         this.dataStorageService.fetchData();
                         this.wasLoading = true;
                     }
-
-                    this.onState.next(new UserAuthenticationReponse(true, false, null));
+                    else {
+                        this.onState.next(new UserAuthenticationReponse(true, false, null));
+                    }
+                    
                 },
                 errorMessage => {
                     this.onState.next(new UserAuthenticationReponse(false, true, this.manageHttpError(errorMessage)));
@@ -79,7 +84,7 @@ export class AuthenticantionService extends BaseService {
 
     getUserData(): Observable<User> {
         return new Observable((observer) => {
-            const loggedIn: boolean = this.getLoggedIn();
+            const loggedIn: boolean = this.checkAuthenticated();
 
             if(loggedIn) {
                 if(this.userData != null) {
@@ -123,9 +128,5 @@ export class AuthenticantionService extends BaseService {
 
     deleteToken() {
         this.cookieService.delete('tk-app');
-    }
-
-    private getLoggedIn(): boolean {
-        return (this.getToken() || '').trim() != '';
     }
 }
