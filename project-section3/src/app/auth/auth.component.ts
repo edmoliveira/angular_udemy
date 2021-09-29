@@ -1,8 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ComponentFactoryResolver, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { AlertComponent } from '../alert/alert.component';
 import { AuthenticantionService } from '../shared/authenticaton.service';
+import { PlaceHolderDirective } from '../shared/placeholder/placeholder.directive';
 
 @Component({
   selector: 'app-auth',
@@ -11,6 +13,8 @@ import { AuthenticantionService } from '../shared/authenticaton.service';
 })
 export class AuthComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
+  private closeAlertSubscription: Subscription;
+
   errorMessage: string = null;
   unauthorized: boolean = false;
 
@@ -18,10 +22,14 @@ export class AuthComponent implements OnInit, OnDestroy {
 
   private returnPath:string = null;
 
+  @ViewChild(PlaceHolderDirective, { static: false })
+  alertHost;
+
   constructor(
     private authenticantionService: AuthenticantionService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private componentFactoryResolver: ComponentFactoryResolver
   ) { 
 
   }
@@ -37,9 +45,9 @@ export class AuthComponent implements OnInit, OnDestroy {
     });
 
     this.subscription = this.authenticantionService.onState.subscribe(response => {
-      this.signupFormGroup.enable();
-
       if(response.wasAuthorized) {
+        this.signupFormGroup.enable();
+
         this.signupFormGroup.reset();
         
         if((this.returnPath || '').trim() !== '') {
@@ -51,10 +59,13 @@ export class AuthComponent implements OnInit, OnDestroy {
         
       }
       else if (response.hasError){
+        this.signupFormGroup.enable();
+
         this.errorMessage = response.messagem;
       }
       else {
         this.unauthorized = true;
+        this.openAlert();
       }
     });
   }
@@ -70,7 +81,34 @@ export class AuthComponent implements OnInit, OnDestroy {
     )
   }
 
+  openAlert() {
+    const alertFactory = this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
+
+    const viewContainerRef = this.alertHost.viewContainerRef;
+
+    viewContainerRef.clear();
+    const componentRef = viewContainerRef.createComponent(alertFactory);
+
+    componentRef.instance.title = 'Authentication Error';
+    componentRef.instance.message = 'Incorrect email or password';
+
+    this.closeAlertSubscription = componentRef.instance.onClose.subscribe(() => {
+      this.closeAlertSubscription.unsubscribe();
+      this.onCloseAlert();
+      viewContainerRef.clear();
+    })
+  }
+
+  onCloseAlert() {
+    this.unauthorized = false;
+    this.signupFormGroup.enable();
+  }
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
+
+    if(this.closeAlertSubscription != null) {
+      this.closeAlertSubscription.unsubscribe();
+    }
   }
 }

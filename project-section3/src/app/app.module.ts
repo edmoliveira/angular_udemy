@@ -20,6 +20,8 @@ import { HomeComponent } from './home/home.component';
 import { WelcomeComponent } from './home/welcome/welcome.component';
 import { CookieService } from 'ngx-cookie-service';
 import { AuthInterceptorService } from './shared/auth-interceptor.service';
+import { AlertComponent } from './alert/alert.component';
+import { PlaceHolderDirective } from './shared/placeholder/placeholder.directive';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,9 @@ import { AuthInterceptorService } from './shared/auth-interceptor.service';
     RecipeDataComponent,
     AuthComponent,
     HomeComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    AlertComponent,
+    PlaceHolderDirective
   ],
   imports: [
     BrowserModule,
