@@ -25,3 +25,13 @@ Two-way-binds => [(ngmode)]="data"
 
 Directive  => You can define your own directives to attach custom behavior to elements in the DOM.
 
+publish
+ng build --watch --deploy-url /recipe-book/ --base-href /recipe-book/
+
+angular universal 
+
+ng add @nguniversal/express-engine
+npm run build:ssr
+npm run dev:ssr
+
+ng add @nestjs/ng-universal

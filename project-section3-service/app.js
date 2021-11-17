@@ -37,7 +37,7 @@ app.use(function (req, res, next) {
 
 app.post('/api/login', (req, res) => {  
   if(req.body.email === 'batman@warner.com' && req.body.password === 'robin'){
-    const expiresIn = 60; // expires in 5min
+    const expiresIn = 360; // expires in 5min
 
     const token = jwt.sign({ userData: userData }, SECRET, {
       expiresIn: expiresIn
