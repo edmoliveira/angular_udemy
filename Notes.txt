@@ -35,3 +35,9 @@ npm run build:ssr
 npm run dev:ssr
 
 ng add @nestjs/ng-universal
+
+ng add @angular/pwa
+
+npm install -g http-server
+
+http-server -p 8081
