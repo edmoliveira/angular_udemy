@@ -41,3 +41,12 @@ ng add @angular/pwa
 npm install -g http-server
 
 http-server -p 8081
+
+//Multi projects
+
+ng new "Project Name" --create-application=false
+
+ng generate application backend
+ng generate library my-button
+
+ng add @angular/material
