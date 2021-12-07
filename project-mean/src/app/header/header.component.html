@@ -1,4 +1,10 @@
 <mat-toolbar color="primary">
   <img src="assets/messages-2-icon.png" style="width: 56px;height: 56px;">
-  My Messages
+  <span><a routerLink="/">My Messages</a></span>
+  <span class="spacer"></span>
+  <ul>
+    <li>
+      <a mat-button routerLink="/create" routerLinkActive="mat-accent">New Post</a>
+    </li>
+  </ul>
 </mat-toolbar>

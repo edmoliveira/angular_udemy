@@ -37,8 +37,34 @@ app.post('/api/posts', (req, res, next) => {
 
   res.status(201).json({
     message: 'Post added successfully',
-    posts: null
+    id: post._id
   })
+});
+
+app.put('/api/posts', (req, res, next) => {
+  const post = new Post({
+    _id: req.body.id,
+    title: req.body.title,
+    content: req.body.content
+  });
+
+  Post.updateOne({_id: req.body.id}, post)
+  .then(() => {
+    res.status(201).json({
+      message: 'Post updated successfully',
+      posts: null
+    });
+  });
+});
+
+app.get('/api/posts/:id', (req, res, next) => {
+  Post.findById({_id: req.params.id})
+    .then(document => {
+      res.status(200).json({
+        message: 'Post obtained successfully',
+        posts: document
+      });
+    });
 });
 
 app.get('/api/posts', (req, res, next) => {
