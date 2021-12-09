@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { NgForm } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ActivatedRoute, ParamMap, Router } from "@angular/router";
 import { take } from "rxjs";
-import { Post } from "../post.model";
 
 import { PostsService } from "../posts.service";
+import { mimeTypeValidator } from "./mime-type.validator";
 
 @Component({
   selector: "app-post-create",
@@ -12,21 +12,25 @@ import { PostsService } from "../posts.service";
   styleUrls: ["./post-create.component.css"]
 })
 export class PostCreateComponent implements OnInit {
-  enteredTitle = "";
-  enteredContent = "";
+  id: string;
   isEdit: boolean = false;
   isLoading: boolean = false;
+  isImageLoading: boolean = false;
+  imagePreview: string;
 
-  post: Post = { id: '', title: '', content: ''};
-
-  @ViewChild('postForm')
-  form: NgForm;
+  postFormGroup: FormGroup;
 
   constructor(public postsService: PostsService
     , private router: Router
     , private route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.postFormGroup = new FormGroup({
+      title: new FormControl(null, [Validators.required]),
+      content: new FormControl(null, [Validators.required]),
+      image: new FormControl(null, [Validators.required], [mimeTypeValidator])
+    });
+
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if(paramMap.has('id')){
         this.isEdit = true;
@@ -38,7 +42,14 @@ export class PostCreateComponent implements OnInit {
             this.isLoading = false;
 
             if(loadPost != null){
-              this.post = loadPost;
+              this.id = loadPost.id;
+              this.postFormGroup.setValue({
+                title: loadPost.title,
+                content: loadPost.content,
+                image: loadPost.imagePath
+              });
+
+              this.imagePreview = loadPost.imagePath;
             }
             else{
               this.router.navigate(['/']);
@@ -48,33 +59,59 @@ export class PostCreateComponent implements OnInit {
     });
   }
 
+  onImagePicked(event: Event) {
+    this.isImageLoading = true;
+
+    const file = (event.target as HTMLInputElement).files[0];
+    this.postFormGroup.patchValue({
+      image: file
+    });
+    this.postFormGroup.controls.image.updateValueAndValidity();
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result as string;
+      this.isImageLoading = false;
+    };
+    reader.readAsDataURL(file);
+  }
+
   onSubmitPost() {
-    if (this.form.invalid) {
+    if (this.postFormGroup.invalid) {
       return;
     }
 
     this.isLoading = true;
 
     if(this.isEdit) {
-      this.postsService.updatePost(this.post.id, this.form.value.title, this.form.value.content)
+      this.postsService.updatePost(
+        this.id,
+        this.postFormGroup.controls.title.value,
+        this.postFormGroup.controls.content.value,
+        this.postFormGroup.controls.image.value
+      )
         .pipe(take(1))
         .subscribe(ok => {
           this.isLoading = false;
 
           if(ok){
-            this.form.resetForm();
+            this.postFormGroup.reset();
             this.router.navigate(['/']);
           }
         });
     }
     else {
-      this.postsService.addPost(this.form.value.title, this.form.value.content)
+      this.postsService.addPost(
+        this.postFormGroup.controls.title.value,
+        this.postFormGroup.controls.content.value,
+        this.postFormGroup.controls.image.value
+      )
         .pipe(take(1))
         .subscribe(ok => {
           this.isLoading = false;
 
           if(ok){
-            this.form.resetForm();
+            this.postFormGroup.reset();
             this.router.navigate(['/']);
           }
         });

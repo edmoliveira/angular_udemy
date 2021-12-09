@@ -24,10 +24,12 @@ export class PostsService {
           id: result.posts._id,
           title: result.posts.title,
           content: result.posts.content,
+          imagePath: result.posts.imagePath
         }
       }))
       .subscribe((postData) => {
         observer.next(postData);
+        observer.complete();
       });
     });
   }
@@ -42,6 +44,7 @@ export class PostsService {
           id: post._id,
           title: post.title,
           content: post.content,
+          imagePath: post.imagePath
         }
       });
     }))
@@ -55,9 +58,21 @@ export class PostsService {
     return this.postsUpdated.asObservable();
   }
 
-  updatePost(id: string, title: string, content: string): Observable<boolean> {
+  updatePost(id: string, title: string, content: string, image: File | string): Observable<boolean> {
     return new Observable((observer) => {
-      const post: Post = { id: id, title: title, content: content};
+      let post: Post | FormData;
+
+      if(typeof(image) === 'object') {
+        post = new FormData();
+
+        post.append('id', id);
+        post.append('title', title);
+        post.append('content', content);
+        post.append('image', image, title);
+      }
+      else {
+        post = { id: id, title: title, content: content, imagePath: image };
+      }
 
       this.httpClient.put('http://localhost:3000/api/posts', post)
       .subscribe((result: Result) => {
@@ -66,24 +81,30 @@ export class PostsService {
         this.getPosts();
 
         observer.next(true);
+        observer.complete();
       });
     });
   }
 
-  addPost(title: string, content: string): Observable<boolean> {
+  addPost(title: string, content: string, image: File): Observable<boolean> {
     return new Observable((observer) => {
-      const post: Post = { id: null, title: title, content: content};
+      const postData = new FormData();
 
-      this.httpClient.post('http://localhost:3000/api/posts', post)
+      postData.append('title', title);
+      postData.append('content', content);
+      postData.append('image', image, title);
+
+      this.httpClient.post('http://localhost:3000/api/posts', postData)
       .subscribe((result: ResultUpdate) => {
         console.log(result.message);
 
-        post.id = result.id;
+        const post: Post = { id: result.id, title: title, content: content, imagePath: result.imagePath };
 
         this.posts.push(post);
         this.postsUpdated.next([...this.posts]);
 
         observer.next(true);
+        observer.complete();
       });
     });
   }

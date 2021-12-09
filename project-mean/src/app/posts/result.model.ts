@@ -8,4 +8,5 @@ export class Result {
 export class ResultUpdate {
   message: string;
   id: string;
+  imagePath: string
 }

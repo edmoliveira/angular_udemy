@@ -2,3 +2,17 @@ mat-form-field,
 textarea {
   width: 100%;
 }
+
+input[type="file"] {
+  visibility: hidden;
+}
+
+.image-preview > img {
+  max-height: 100px;
+  max-width: 100px;
+}
+
+.image-preview > img {
+  width: 70%;
+  height: auto;
+}
