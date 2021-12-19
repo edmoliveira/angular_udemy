@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, Subject } from 'rxjs';
+import { map, Observable, Observer, Subject } from 'rxjs';
+import { PostAsync } from './post-async.model';
 
 import { Post } from './post.model';
 import { Result, ResultUpdate } from './result.model';
@@ -8,10 +9,17 @@ import { Result, ResultUpdate } from './result.model';
 @Injectable({providedIn: 'root'})
 export class PostsService {
   private posts: Post[] = [];
-  private postsUpdated = new Subject<Post[]>();
+  private postTotal: number = 0;
+  private postsUpdated = new Subject<void>();
+
+  readonly postResult: Observable<PostAsync>;
 
   constructor(private httpClient: HttpClient) {
-
+    this.postResult = new Observable(observer => {
+      this.postsUpdated.subscribe(() => {
+        observer.next({ hasData: this.posts.length > 0, postTotal: this.postTotal, array: [...this.posts] });
+      });
+    });
   }
 
   getPost(id: string): Observable<Post> {
@@ -24,38 +32,43 @@ export class PostsService {
           id: result.posts._id,
           title: result.posts.title,
           content: result.posts.content,
-          imagePath: result.posts.imagePath
+          imagePath: result.posts.imagePath,
+          creator: result.posts.creator
         }
       }))
       .subscribe((postData) => {
         observer.next(postData);
-        observer.complete();
       });
     });
   }
 
-  getPosts(): void {
-    this.httpClient.get<Result>('http://localhost:3000/api/posts')
-    .pipe(map(result => {
-      console.log(result.message);
+  getPosts(pagesize: number, pageIndex: number): Observable<boolean> {
+    return new Observable((observer) => {
+      const queryParams = `?pagesize=${pagesize}&page=${pageIndex}`;
 
-      return result.posts.map(post => {
-        return {
-          id: post._id,
-          title: post.title,
-          content: post.content,
-          imagePath: post.imagePath
-        }
+      this.httpClient.get<Result>('http://localhost:3000/api/posts' + queryParams)
+      .pipe(map(result => {
+        console.log(result.message);
+
+        this.postTotal = result.total;
+
+        return result.posts.map(post => {
+          return {
+            id: post._id,
+            title: post.title,
+            content: post.content,
+            imagePath: post.imagePath,
+            creator: post.creator === result.userId
+          }
+        });
+      }))
+      .subscribe((postData) => {
+        this.posts = postData;
+        this.postsUpdated.next();
+
+        observer.next(true);
       });
-    }))
-    .subscribe((postData) => {
-      this.posts = postData;
-      this.postsUpdated.next([...this.posts]);
     });
-  }
-
-  getPostUpdateListener() {
-    return this.postsUpdated.asObservable();
   }
 
   updatePost(id: string, title: string, content: string, image: File | string): Observable<boolean> {
@@ -71,17 +84,21 @@ export class PostsService {
         post.append('image', image, title);
       }
       else {
-        post = { id: id, title: title, content: content, imagePath: image };
+        post = { id: id, title: title, content: content, imagePath: image, creator: null };
       }
 
       this.httpClient.put('http://localhost:3000/api/posts', post)
-      .subscribe((result: Result) => {
+      .subscribe((result: ResultUpdate) => {
         console.log(result.message);
 
-        this.getPosts();
+        this.postTotal = result.total;
+
+        const index = this.posts.findIndex(c => c.id === id);
+
+        this.posts[index] = { id: id, title: title, content: content, imagePath: result.imagePath, creator: null };
+        this.postsUpdated.next();
 
         observer.next(true);
-        observer.complete();
       });
     });
   }
@@ -98,22 +115,33 @@ export class PostsService {
       .subscribe((result: ResultUpdate) => {
         console.log(result.message);
 
-        const post: Post = { id: result.id, title: title, content: content, imagePath: result.imagePath };
+        this.postTotal = result.total;
+
+        const post: Post = { id: result.id, title: title, content: content, imagePath: result.imagePath, creator: null };
 
         this.posts.push(post);
-        this.postsUpdated.next([...this.posts]);
+        this.postsUpdated.next();
 
         observer.next(true);
-        observer.complete();
       });
     });
   }
 
-  deletePost(id: string){
-    this.httpClient.delete('http://localhost:3000/api/posts/' + id)
-    .subscribe((result: Result) => {
-      console.log(result.message);
-      this.getPosts();
+  deletePost(id: string): Observable<{ postTotal: number, pageTotal: number }> {
+    return new Observable((observer) => {
+      this.httpClient.delete('http://localhost:3000/api/posts/' + id)
+      .subscribe((result: Result) => {
+        console.log(result.message);
+
+        this.postTotal = result.total;
+
+        const index = this.posts.findIndex(c => c.id === id);
+
+        this.posts.splice(index, 1)
+        this.postsUpdated.next();
+
+        observer.next({ postTotal: this.postTotal, pageTotal: this.posts.length });
+      });
     });
   }
 }

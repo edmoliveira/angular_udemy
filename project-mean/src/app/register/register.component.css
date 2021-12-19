@@ -1,0 +1,38 @@
+.sign-in {
+  display: flex;
+  justify-content: center;
+  margin: 100px 0px;
+}
+
+.sign-in-content {
+  width: 100%;
+  max-width: 350px;
+}
+
+.sign-in-title {
+  color: #ff4081;
+  text-align: center;
+}
+
+.form div {
+  padding: 5px;
+  padding-bottom: 7px;
+}
+
+.form div:last-child {
+  display: flex;
+  width: 100%;
+}
+
+.form div:last-child button {
+  width: 100px;
+  height: 40px;
+}
+
+.form div:last-child button:first-child {
+  margin-right: auto;
+}
+
+.form div:last-child button:last-child {
+  margin-left: auto;
+}

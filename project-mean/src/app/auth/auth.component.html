@@ -1,0 +1,46 @@
+<div class="sign-in" onkeypress="">
+  <mat-card class="sign-in-content">
+    <div *ngIf="isLoading">
+      <mat-progress-bar mode="indeterminate" ></mat-progress-bar>
+      <br>
+    </div>
+    <mat-card-title class="sign-in-title">
+      Login
+    </mat-card-title>
+    <mat-card-content [formGroup]="formGroup">
+      <form (keyup.enter)="formEnter(btnSignIn)">
+        <div class="form">
+          <div>
+            <mat-form-field style="width: 100%;">
+              <input type="text" matInput placeholder="Email" formControlName="username">
+
+              <mat-error *ngIf="!formGroup.get('username').valid && formGroup.get('username').touched">
+                Please enter a valid email.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field style="width: 100%;" >
+              <input type="password" matInput placeholder="Password" formControlName="password">
+              <mat-error *ngIf="!formGroup.get('password').valid && formGroup.get('password').touched">
+                Please enter the password.
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div>
+            <div class="button">
+              <button
+              type="button"
+              mat-button
+              mat-raised-button
+              color="accent"
+              [disabled]="formGroup.invalid"
+              (click)="onSubmit()" #btnSignIn>Sign in</button>
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
