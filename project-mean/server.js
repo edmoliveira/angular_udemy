@@ -44,6 +44,8 @@ const onListening = () => {
 };
 
 const port = normalizePort(process.env.PORT || "3000");
+
+app.set('domain', '127.0.0.1');
 app.set("port", port);
 
 const server = http.createServer(app);

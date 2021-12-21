@@ -12,8 +12,17 @@ export class AuthInterceptorService implements HttpInterceptor {
     }
 
     intercept(req: HttpRequest<any>, next: HttpHandler) {
+        let token = '';
+
+        if(req.url.indexOf('https://localhost:44370') > -1){
+          token = this.authenticantionService.getTokenHub();
+        }
+        else {
+          token = this.authenticantionService.getToken();
+        }
+
         const modifiedRequest = req.clone({
-            headers: req.headers.append('Authorization', 'Bearer ' + this.authenticantionService.getToken())
+            headers: req.headers.append('Authorization', 'Bearer ' + token)
         });
 
         return next.handle(modifiedRequest).pipe(catchError(err => {

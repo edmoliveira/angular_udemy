@@ -4,3 +4,11 @@
     <router-outlet #outlet="outlet"></router-outlet>
   </div>
 </main>
+<div class="users-online" *ngIf="isAuthenticated | async" routerLink="/online-users">
+  <div >
+    <mat-icon>group</mat-icon>
+  </div>
+  <div>
+    <span>{{ (usersOnlineObs | async)?.length }}</span>
+  </div>
+</div>

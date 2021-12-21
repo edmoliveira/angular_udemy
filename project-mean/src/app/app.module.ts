@@ -13,6 +13,8 @@ import { MatProgressBarModule  } from '@angular/material/progress-bar'
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { MatPaginatorModule } from '@angular/material/paginator'
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon'
+import { MatTableModule } from '@angular/material/table'
 
 import { AppComponent } from "./app.component";
 import { PostCreateComponent } from "./posts/post-create/post-create.component";
@@ -23,6 +25,7 @@ import { AuthInterceptorService } from "./shared/auth-interceptor.service";
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AuthComponent } from './auth/auth.component';
 import { RegisterComponent } from './register/register.component';
+import { UsersOnlineComponent } from './users-online/users-online.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,8 @@ import { RegisterComponent } from './register/register.component';
     PostListComponent,
     NotFoundComponent,
     AuthComponent,
-    RegisterComponent
+    RegisterComponent,
+    UsersOnlineComponent
   ],
   imports: [
     BrowserModule,
@@ -48,7 +52,9 @@ import { RegisterComponent } from './register/register.component';
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatIconModule,
+    MatTableModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true }
